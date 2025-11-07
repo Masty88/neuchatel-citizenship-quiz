@@ -17,6 +17,7 @@ interface QuizState {
   selectedQuestions: Question[];
   currentIndex: number;
   userAnswers: string[];
+  validationResults: boolean[];
   showResults: boolean;
   score: number;
 }
@@ -727,6 +728,7 @@ export class QuizApp extends LitElement {
     selectedQuestions: [],
     currentIndex: 0,
     userAnswers: [],
+    validationResults: [],
     showResults: false,
     score: 0
   };
@@ -740,7 +742,6 @@ export class QuizApp extends LitElement {
   @state() private showHelp = false;
   @state() private copyButtonText = '📋 Copier';
   @state() private isValidating = false;
-  @state() private isCalculatingScore = false;
   @state() private questionType: QuestionType = 'all';
   @state() private quizConfig: QuizConfig = {
     géographie: 4,
@@ -812,6 +813,7 @@ export class QuizApp extends LitElement {
       selectedQuestions: this.getRandomQuestions(),
       currentIndex: 0,
       userAnswers: [],
+      validationResults: [],
       showResults: false,
       score: 0
     };
@@ -904,8 +906,9 @@ export class QuizApp extends LitElement {
       );
 
       this.isCorrect = result.isCorrect;
+      this.quizState.validationResults.push(result.isCorrect);
       this.showFeedback = true;
-      
+
       // Start auto-advance timer
       this.startAutoAdvanceTimer();
     } catch (error) {
@@ -923,6 +926,7 @@ export class QuizApp extends LitElement {
       this.showHelp = false;
       this.currentAnswer = this.quizState.userAnswers[this.quizState.currentIndex - 1];
       this.quizState.userAnswers.pop();
+      this.quizState.validationResults.pop();
       this.quizState = {
         ...this.quizState,
         currentIndex: this.quizState.currentIndex - 1
@@ -978,35 +982,15 @@ export class QuizApp extends LitElement {
     return false;
   }
 
-  private async calculateScore() {
-    this.isCalculatingScore = true;
-    let score = 0;
-
-    // Validate all answers with AI
-    for (let index = 0; index < this.quizState.selectedQuestions.length; index++) {
-      const question = this.quizState.selectedQuestions[index];
-      const userAnswer = this.quizState.userAnswers[index];
-
-      try {
-        const result = await validateAnswer(userAnswer, question.answer, question.question);
-        if (result.isCorrect) {
-          score++;
-        }
-      } catch (error) {
-        console.error('Error validating answer:', error);
-        // Fallback to basic check
-        if (this.checkAnswer(userAnswer, question.answer)) {
-          score++;
-        }
-      }
-    }
+  private calculateScore() {
+    // Count the correct answers from validation results
+    const score = this.quizState.validationResults.filter(result => result).length;
 
     this.quizState = {
       ...this.quizState,
       score,
       showResults: true
     };
-    this.isCalculatingScore = false;
   }
 
   private restartQuiz() {
@@ -1353,25 +1337,6 @@ export class QuizApp extends LitElement {
     `;
   }
 
-  private renderCalculatingScore() {
-    return html`
-      <div class="content-wrapper">
-        <div class="results-screen">
-          <div class="results-card">
-            <h2>Calcul du score en cours...</h2>
-            
-            <div style="text-align: center; padding: 2rem 0;">
-              <sl-spinner style="font-size: 3rem; --track-width: 6px;"></sl-spinner>
-            </div>
-
-            <p style="text-align: center; color: #666; margin-top: 1rem;">
-              Validation de vos réponses avec l'IA...
-            </p>
-          </div>
-        </div>
-      </div>
-    `;
-  }
 
   private renderResults() {
     const passed = this.quizState.score >= 10;
@@ -1416,7 +1381,7 @@ export class QuizApp extends LitElement {
           <div class="results-details">
             <h3>Détails des réponses</h3>
             ${this.quizState.selectedQuestions.map((question, index) => {
-              const isCorrect = this.checkAnswer(this.quizState.userAnswers[index], question.answer);
+              const isCorrect = this.quizState.validationResults[index];
               return html`
                 <div class="result-item ${isCorrect ? 'correct' : 'incorrect'}">
                   <div class="category-badges">
@@ -1463,9 +1428,7 @@ export class QuizApp extends LitElement {
 
       ${!this.quizStarted
         ? (this.showConfig ? this.renderConfigScreen() : this.renderStartScreen())
-        : (this.isCalculatingScore
-          ? this.renderCalculatingScore()
-          : (this.quizState.showResults ? this.renderResults() : this.renderQuiz()))}
+        : (this.quizState.showResults ? this.renderResults() : this.renderQuiz())}
     `;
   }
 }
