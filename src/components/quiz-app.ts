@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { questions, type Question } from '../data/questions';
+import { validateAnswer } from '../services/answerValidator';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
@@ -10,6 +11,7 @@ import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/radio-group/radio-group.js';
 import '@shoelace-style/shoelace/dist/components/radio-button/radio-button.js';
 import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 
 interface QuizState {
   selectedQuestions: Question[];
@@ -685,6 +687,7 @@ export class QuizApp extends LitElement {
   @state() private isCorrect = false;
   @state() private showHelp = false;
   @state() private copyButtonText = '📋 Copier';
+  @state() private isValidating = false;
   @state() private questionType: QuestionType = 'all';
   @state() private quizConfig: QuizConfig = {
     géographie: 4,
@@ -756,7 +759,7 @@ export class QuizApp extends LitElement {
     }
   }
 
-  private nextQuestion() {
+  private async nextQuestion() {
     const currentQuestion = this.quizState.selectedQuestions[this.quizState.currentIndex];
 
     // If showing feedback, move to next question
@@ -797,13 +800,27 @@ export class QuizApp extends LitElement {
       }
     }
 
-    // Check answer and show feedback
-    if (currentQuestion.isMultipleAnswer && currentQuestion.isMultipleChoice) {
-      this.isCorrect = this.checkAnswer(this.selectedAnswers.join(', '), currentQuestion.answer);
-    } else {
-      this.isCorrect = this.checkAnswer(this.currentAnswer, currentQuestion.answer);
+    // Check answer using Groq AI
+    this.isValidating = true;
+    try {
+      const userAnswer = currentQuestion.isMultipleAnswer && currentQuestion.isMultipleChoice
+        ? this.selectedAnswers.join(', ')
+        : this.currentAnswer;
+
+      const result = await validateAnswer(
+        userAnswer,
+        currentQuestion.answer,
+        currentQuestion.question
+      );
+
+      this.isCorrect = result.isCorrect;
+      this.showFeedback = true;
+    } catch (error) {
+      console.error('Validation error:', error);
+      alert('Erreur lors de la validation. Veuillez réessayer.');
+    } finally {
+      this.isValidating = false;
     }
-    this.showFeedback = true;
   }
 
   private previousQuestion() {
@@ -837,20 +854,57 @@ export class QuizApp extends LitElement {
       return true;
     }
 
-    // Check if the answer contains key parts (for multiple answer questions)
-    const correctParts = normalizedCorrect.split(/[,\/]/);
-    return correctParts.some(part =>
-      normalizedUser.includes(part.trim()) || part.trim().includes(normalizedUser)
-    );
+    // For multiple answer questions (separated by comma or slash)
+    const correctParts = normalizedCorrect.split(/[,\/]/).map(p => p.trim()).filter(p => p.length > 0);
+    const userParts = normalizedUser.split(/[,\/]/).map(p => p.trim()).filter(p => p.length > 0);
+
+    // If there are multiple correct parts, check if user provided enough correct answers
+    if (correctParts.length > 1) {
+      // Count how many correct parts match user parts
+      const matchCount = userParts.filter(userPart =>
+        correctParts.some(correctPart => {
+          // Allow exact match or very close match (at least 80% similarity)
+          return userPart === correctPart ||
+                 correctPart === userPart ||
+                 (userPart.length >= 3 && correctPart.includes(userPart) && userPart.length / correctPart.length >= 0.8) ||
+                 (correctPart.length >= 3 && userPart.includes(correctPart) && correctPart.length / userPart.length >= 0.8);
+        })
+      ).length;
+
+      // Require at least 60% of correct answers for multiple answer questions
+      return matchCount >= Math.ceil(correctParts.length * 0.6);
+    }
+
+    // For single answer questions, require close match (min 4 chars and at least 80% of the answer)
+    if (normalizedUser.length >= 4 && normalizedCorrect.length >= 4) {
+      return (normalizedUser.includes(normalizedCorrect) || normalizedCorrect.includes(normalizedUser)) &&
+             (normalizedUser.length / normalizedCorrect.length >= 0.8 || normalizedCorrect.length / normalizedUser.length >= 0.8);
+    }
+
+    return false;
   }
 
-  private calculateScore() {
+  private async calculateScore() {
     let score = 0;
-    this.quizState.selectedQuestions.forEach((question, index) => {
-      if (this.checkAnswer(this.quizState.userAnswers[index], question.answer)) {
-        score++;
+
+    // Validate all answers with AI
+    for (let index = 0; index < this.quizState.selectedQuestions.length; index++) {
+      const question = this.quizState.selectedQuestions[index];
+      const userAnswer = this.quizState.userAnswers[index];
+
+      try {
+        const result = await validateAnswer(userAnswer, question.answer, question.question);
+        if (result.isCorrect) {
+          score++;
+        }
+      } catch (error) {
+        console.error('Error validating answer:', error);
+        // Fallback to basic check
+        if (this.checkAnswer(userAnswer, question.answer)) {
+          score++;
+        }
       }
-    });
+    }
 
     this.quizState = {
       ...this.quizState,
@@ -1166,10 +1220,14 @@ export class QuizApp extends LitElement {
           <sl-button
             variant="primary"
             @click=${this.nextQuestion}
+            ?disabled=${this.isValidating}
           >
-            ${this.showFeedback
+            ${this.isValidating ? html`
+              <sl-spinner style="font-size: 1rem; --indicator-color: white; margin-right: 0.5rem;"></sl-spinner>
+              Validation...
+            ` : (this.showFeedback
               ? (this.quizState.currentIndex < this.quizState.selectedQuestions.length - 1 ? 'Continuer' : 'Voir les résultats')
-              : (this.quizState.currentIndex < this.quizState.selectedQuestions.length - 1 ? 'Vérifier' : 'Terminer')}
+              : (this.quizState.currentIndex < this.quizState.selectedQuestions.length - 1 ? 'Vérifier' : 'Terminer'))}
           </sl-button>
         </div>
       </div>
