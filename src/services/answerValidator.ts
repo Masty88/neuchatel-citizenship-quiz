@@ -36,7 +36,7 @@ Ne donne AUCUN autre texte, juste le JSON.`;
           content: prompt,
         },
       ],
-      model: "llama-3.1-70b-versatile",
+      model: "llama-3.3-70b-versatile",
       temperature: 0.1,
       max_tokens: 200,
       response_format: { type: "json_object" }
