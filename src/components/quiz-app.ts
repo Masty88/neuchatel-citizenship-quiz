@@ -366,48 +366,53 @@ export class QuizApp extends LitElement {
       color: white;
     }
 
-    sl-checkbox {
-      margin-bottom: 0.75rem;
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    sl-checkbox::part(control) {
-      border: 2px solid #e5e5e5;
-      border-radius: 6px;
-    }
-
-    sl-checkbox::part(control--checked) {
-      background: #DC0018;
-      border-color: #DC0018;
-    }
-
-    sl-checkbox::part(label) {
+    .checkbox-item {
       padding: 1rem 1.25rem;
       border: 2px solid #e5e5e5;
       border-radius: 8px;
       background: white;
       transition: all 0.2s ease;
       font-size: 1rem;
-      width: 100%;
+      cursor: pointer;
       display: flex;
       align-items: center;
+      gap: 0.75rem;
     }
 
-    sl-checkbox:hover::part(label) {
+    .checkbox-item:hover {
       border-color: #DC0018;
       background: #fff5f5;
     }
 
-    sl-checkbox[checked]::part(label) {
+    .checkbox-item.checked {
       border-color: #DC0018;
       background: #DC0018;
       color: white;
       font-weight: 500;
     }
 
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+    .checkbox-item sl-checkbox {
+      margin: 0;
+    }
+
+    .checkbox-item sl-checkbox::part(control) {
+      border: 2px solid #e5e5e5;
+      border-radius: 6px;
+    }
+
+    .checkbox-item.checked sl-checkbox::part(control) {
+      background: white;
+      border-color: white;
+    }
+
+    .checkbox-item.checked sl-checkbox::part(control)::after {
+      color: #DC0018;
     }
 
     sl-input {
@@ -756,6 +761,14 @@ export class QuizApp extends LitElement {
       this.selectedAnswers = [...this.selectedAnswers, value];
     } else {
       this.selectedAnswers = this.selectedAnswers.filter(a => a !== value);
+    }
+  }
+
+  private toggleCheckbox(option: string) {
+    if (this.selectedAnswers.includes(option)) {
+      this.selectedAnswers = this.selectedAnswers.filter(a => a !== option);
+    } else {
+      this.selectedAnswers = [...this.selectedAnswers, option];
     }
   }
 
@@ -1150,12 +1163,17 @@ export class QuizApp extends LitElement {
             currentQuestion.isMultipleAnswer ? html`
               <div class="checkbox-group">
                 ${currentQuestion.options?.map(option => html`
-                  <sl-checkbox
-                    value=${option}
-                    ?checked=${this.selectedAnswers.includes(option)}
-                    @sl-change=${this.handleCheckboxChange}
-                    ?disabled=${this.showFeedback}
-                  >${option}</sl-checkbox>
+                  <div
+                    class="checkbox-item ${this.selectedAnswers.includes(option) ? 'checked' : ''}"
+                    @click=${() => !this.showFeedback && this.toggleCheckbox(option)}
+                  >
+                    <sl-checkbox
+                      value=${option}
+                      ?checked=${this.selectedAnswers.includes(option)}
+                      ?disabled=${this.showFeedback}
+                    ></sl-checkbox>
+                    <span>${option}</span>
+                  </div>
                 `)}
               </div>
             ` : html`
