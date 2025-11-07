@@ -418,12 +418,19 @@ export class QuizApp extends LitElement {
 
     .help-alert {
       position: relative;
+      padding-right: 8rem;
+    }
+
+    .help-alert::part(base) {
+      display: flex;
+      align-items: center;
     }
 
     .copy-button {
       position: absolute;
-      top: 1rem;
+      top: 50%;
       right: 1rem;
+      transform: translateY(-50%);
     }
 
     .copy-button::part(base) {
