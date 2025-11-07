@@ -1,0 +1,16 @@
+{
+  "name": "neuchatel-citizenship-quiz",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@shoelace-style/shoelace": "^2.20.1",
+    "astro": "^5.15.4",
+    "lit": "^3.3.1"
+  }
+}
