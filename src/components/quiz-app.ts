@@ -389,7 +389,21 @@ export class QuizApp extends LitElement {
       min-height: 3rem;
     }
 
-    .checkbox-item span {
+    .checkbox-icon {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #e5e5e5;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      font-weight: bold;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-text {
       flex: 1;
       word-wrap: break-word;
       white-space: normal;
@@ -400,6 +414,10 @@ export class QuizApp extends LitElement {
       background: #fff5f5;
     }
 
+    .checkbox-item:hover .checkbox-icon {
+      border-color: #DC0018;
+    }
+
     .checkbox-item.checked {
       border-color: #DC0018;
       background: #DC0018;
@@ -407,21 +425,9 @@ export class QuizApp extends LitElement {
       font-weight: 500;
     }
 
-    .checkbox-item sl-checkbox {
-      margin: 0;
-    }
-
-    .checkbox-item sl-checkbox::part(control) {
-      border: 2px solid #e5e5e5;
-      border-radius: 6px;
-    }
-
-    .checkbox-item.checked sl-checkbox::part(control) {
+    .checkbox-item.checked .checkbox-icon {
       background: white;
       border-color: white;
-    }
-
-    .checkbox-item.checked sl-checkbox::part(control)::after {
       color: #DC0018;
     }
 
@@ -455,14 +461,24 @@ export class QuizApp extends LitElement {
     }
 
     .help-button {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       width: 100%;
+      display: block;
+    }
+
+    .help-button::part(base) {
+      width: 100%;
+      justify-content: center;
+      font-size: 1rem;
+      padding: 0.875rem 1.5rem;
+      border-radius: 8px;
     }
 
     sl-button[variant="warning"]::part(base) {
       background: #f59e0b;
       border-color: #f59e0b;
       color: white;
+      font-weight: 500;
     }
 
     sl-button[variant="warning"]::part(base):hover {
@@ -480,24 +496,38 @@ export class QuizApp extends LitElement {
 
     .help-alert {
       position: relative;
-      padding-right: 8rem;
+      margin-top: 1rem;
     }
 
     .help-alert::part(base) {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 1rem;
+      background: #fffbeb;
+      border-color: #fbbf24;
+    }
+
+    .help-answer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .help-answer-text {
+      flex: 1;
+      word-wrap: break-word;
     }
 
     .copy-button {
-      position: absolute;
-      top: 50%;
-      right: 1rem;
-      transform: translateY(-50%);
+      flex-shrink: 0;
     }
 
     .copy-button::part(base) {
       padding: 0.5rem 1rem;
       font-size: 0.875rem;
+      white-space: nowrap;
     }
 
     .navigation-buttons {
@@ -1177,12 +1207,8 @@ export class QuizApp extends LitElement {
                     class="checkbox-item ${this.selectedAnswers.includes(option) ? 'checked' : ''}"
                     @click=${() => !this.showFeedback && this.toggleCheckbox(option)}
                   >
-                    <sl-checkbox
-                      value=${option}
-                      ?checked=${this.selectedAnswers.includes(option)}
-                      ?disabled=${this.showFeedback}
-                    ></sl-checkbox>
-                    <span>${option}</span>
+                    <span class="checkbox-icon">${this.selectedAnswers.includes(option) ? '✓' : ''}</span>
+                    <span class="checkbox-text">${option}</span>
                   </div>
                 `)}
               </div>
@@ -1195,7 +1221,7 @@ export class QuizApp extends LitElement {
             `
           ) : html`
             <sl-input
-              placeholder="Entrez votre réponse..."
+              placeholder="Votre réponse..."
               value=${this.currentAnswer}
               @sl-input=${this.handleAnswerInput}
               size="large"
@@ -1215,17 +1241,20 @@ export class QuizApp extends LitElement {
           ` : ''}
 
           ${this.showHelp && !this.showFeedback ? html`
-            <sl-alert variant="warning" open class="help-alert" style="margin-top: 1rem;">
-              <sl-icon slot="icon" name="lightbulb"></sl-icon>
-              <strong>Réponse :</strong> ${currentQuestion.answer}
-              <sl-button
-                variant="default"
-                size="small"
-                class="copy-button"
-                @click=${this.copyAnswer}
-              >
-                ${this.copyButtonText}
-              </sl-button>
+            <sl-alert variant="warning" open class="help-alert">
+              <div class="help-answer-content">
+                <div class="help-answer-text">
+                  <strong>💡 Réponse :</strong> ${currentQuestion.answer}
+                </div>
+                <sl-button
+                  variant="default"
+                  size="small"
+                  class="copy-button"
+                  @click=${this.copyAnswer}
+                >
+                  ${this.copyButtonText}
+                </sl-button>
+              </div>
             </sl-alert>
           ` : ''}
 

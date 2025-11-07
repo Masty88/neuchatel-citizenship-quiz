@@ -24,6 +24,15 @@ export const questions: Question[] = [
     id: 2,
     category: 'géographie',
     type: 'national',
+    question: 'Quelle est, approximativement, la superficie de la Suisse ?',
+    answer: '41 000 km²',
+    isMultipleChoice: true,
+    options: ['27 000 km²', '41 000 km²', '133 000 km²', '265 000 km²']
+  },
+  {
+    id: 3,
+    category: 'géographie',
+    type: 'national',
     question: 'Citez les langues nationales suisses et un canton pour chacune de ces langues.',
     answer: 'Français: Genève, Vaud, Valais, Neuchâtel, Jura / Allemand: Zurich, Argovie, Berne, Soleure / Italien: Tessin, Grisons / Romanche: Grisons',
     isMultipleAnswer: true
@@ -64,10 +73,10 @@ export const questions: Question[] = [
     id: 7,
     category: 'géographie',
     type: 'national',
-    question: 'Quel est le pourcentage de la population résidante permanente étrangère en Suisse ?',
-    answer: '26%',
+    question: 'Quel est le pourcentage de personnes qui n\'ont pas la nationalité suisse en Suisse ?',
+    answer: '27%',
     isMultipleChoice: true,
-    options: ['12%', '26%', '45%']
+    options: ['12%', '27%', '45%']
   },
   {
     id: 8,
@@ -138,7 +147,7 @@ export const questions: Question[] = [
     id: 16,
     category: 'géographie',
     type: 'national',
-    question: 'La prairie du Grütli se trouve au bord du lac des Quatre-Cantons ?',
+    question: 'Au bord de quel lac se trouve la prairie du Grütli ?',
     answer: 'Lac des Quatre-Cantons',
     isMultipleChoice: true,
     options: ['lac de Zoug', 'lac de Constance', 'lac de Walenstadt', 'lac des Quatre-Cantons']
@@ -163,7 +172,7 @@ export const questions: Question[] = [
     id: 19,
     category: 'géographie',
     type: 'national',
-    question: 'Le lac Léman est situé en Suisse et en France ?',
+    question: 'Avec quel pays la Suisse partage-t-elle le lac Léman ?',
     answer: 'France',
     isMultipleChoice: true,
     options: ['Belgique', 'Allemagne', 'Autriche', 'France']
@@ -278,6 +287,61 @@ export const questions: Question[] = [
     question: 'Au bord de quel lac se situe la localité tessinoise de Locarno ?',
     answer: 'Le lac Majeur'
   },
+  {
+    id: 189,
+    category: 'géographie',
+    type: 'national',
+    question: 'Le canton de Genève possède une frontière avec lequel de ces cantons ?',
+    answer: 'Vaud',
+    isMultipleChoice: true,
+    options: ['Berne', 'Fribourg', 'Valais', 'Vaud', 'Zurich']
+  },
+  {
+    id: 190,
+    category: 'géographie',
+    type: 'national',
+    question: 'Quels sont les cantons de Suisse romande officiellement uniquement francophones ?',
+    answer: 'Genève, Jura, Neuchâtel, Vaud',
+    isMultipleAnswer: true,
+    isMultipleChoice: true,
+    options: ['Berne', 'Fribourg', 'Genève', 'Jura', 'Neuchâtel', 'Valais', 'Vaud']
+  },
+  {
+    id: 191,
+    category: 'géographie',
+    type: 'national',
+    question: 'Quelle est la montagne la plus haute entièrement en Suisse romande ?',
+    answer: 'Grand-Combin',
+    isMultipleChoice: true,
+    options: ['Cervin', 'Dent Blanche', 'Grand-Combin', 'Pointe Dufour', 'Zinalrothorn']
+  },
+  {
+    id: 192,
+    category: 'géographie',
+    type: 'national',
+    question: 'Quel est le seul endroit du canton de Fribourg à n\'appartenir à aucune commune ?',
+    answer: 'La forêt domaniale du Galm',
+    isMultipleChoice: true,
+    options: ['La cathédrale de St-Nicolas de Fribourg', 'La forêt domaniale du Galm', 'Le château de Morat', 'Le sommet du Moléson', 'Les territoires enclavés dans le canton de Vaud']
+  },
+  {
+    id: 193,
+    category: 'géographie',
+    type: 'national',
+    question: 'Dans quel canton la ville de Moutier se situe-t-elle (jusqu\'en 2026) ?',
+    answer: 'Berne',
+    isMultipleChoice: true,
+    options: ['Berne', 'Uri', 'Jura', 'Vaud']
+  },
+  {
+    id: 194,
+    category: 'géographie',
+    type: 'national',
+    question: 'Quel est le plus haut barrage de Suisse ?',
+    answer: 'Barrage de la Grande-Dixence',
+    isMultipleChoice: true,
+    options: ['Barrage de la Grande-Dixence', 'Barrage de Mauvoisin', 'Barrage de Tseuzier', 'Barrage des Trois-Gorges', 'Barrage du Léman']
+  },
 
   // ==========================================
   // GÉOGRAPHIE - QUESTIONS CANTONALES (9)
@@ -349,6 +413,33 @@ export const questions: Question[] = [
     type: 'cantonal',
     question: 'Quel pays de l\'Union européenne a une frontière terrestre avec le canton de Neuchâtel ?',
     answer: 'La France'
+  },
+  {
+    id: 195,
+    category: 'géographie',
+    type: 'cantonal',
+    question: 'Quelle rivière forme le lac des Brenets ?',
+    answer: 'Le Doubs',
+    isMultipleChoice: true,
+    options: ['L\'Areuse', 'L\'Orbe', 'La Broye', 'La Sarine', 'Le Doubs']
+  },
+  {
+    id: 196,
+    category: 'géographie',
+    type: 'cantonal',
+    question: 'À côté de quel lac se trouve le Saut du Doubs ?',
+    answer: 'Lac des Brenets',
+    isMultipleChoice: true,
+    options: ['Lac Brenet', 'Lac de Joux', 'Lac de Neuchâtel', 'Lac des Brenets', 'Lac Ter']
+  },
+  {
+    id: 197,
+    category: 'géographie',
+    type: 'cantonal',
+    question: 'Quel est le plus grand lac de Suisse ?',
+    answer: 'Lac Léman',
+    isMultipleChoice: true,
+    options: ['Lac Léman', 'Lac de Zürich', 'Lac de Neuchâtel', 'Lac des Quatre-Cantons']
   },
 
   // ==========================================
@@ -486,7 +577,7 @@ export const questions: Question[] = [
     id: 60,
     category: 'histoire',
     type: 'national',
-    question: 'La Landsgemeinde est : une assemblée pendant laquelle on vote à main levée ?',
+    question: 'Qu\'est-ce que la Landsgemeinde ?',
     answer: 'Une assemblée pendant laquelle on vote à main levée',
     isMultipleChoice: true,
     options: ['une assemblée pendant laquelle on vote à main levée', 'un plat suisse typique', 'une danse', 'une bataille']
@@ -561,6 +652,25 @@ export const questions: Question[] = [
     type: 'national',
     question: 'Quel pont célèbre du canton de Lucerne a été détruit lors d\'un incendie le 18 août 1993 ?',
     answer: 'Le Kapellbrücke (pont de Lucerne)'
+  },
+  {
+    id: 198,
+    category: 'histoire',
+    type: 'national',
+    question: 'Dans quelle entité se trouvait la Suisse au Moyen-Âge ?',
+    answer: 'Le Saint-Empire romain germanique',
+    isMultipleChoice: true,
+    options: ['L\'Empire romain d\'Occident', 'L\'Empire romain d\'Orient', 'Le Royaume de France', 'Le Royaume de Sardaigne', 'Le Saint-Empire romain germanique']
+  },
+  {
+    id: 199,
+    category: 'histoire',
+    type: 'national',
+    question: 'Quels cantons faisaient partie de la Confédération en 1810 ?',
+    answer: 'Fribourg, Vaud',
+    isMultipleAnswer: true,
+    isMultipleChoice: true,
+    options: ['Fribourg', 'Genève', 'Neuchâtel', 'Vaud']
   },
 
   // ==========================================
@@ -638,6 +748,13 @@ export const questions: Question[] = [
     question: 'Qui est Philippe Suchard et quel célèbre bonbon a été créé par sa fabrique ?',
     answer: 'Un confiseur suisse fondateur des chocolats Suchard. Le Sugus a été créé en 1931'
   },
+  {
+    id: 200,
+    category: 'histoire',
+    type: 'cantonal',
+    question: 'Quelle particularité historique a le canton de Neuchâtel dans la Confédération suisse ?',
+    answer: 'Il a été le dernier à devenir canton suisse et a été une principauté prussienne jusqu\'en 1848'
+  },
 
   // ==========================================
   // POLITIQUE - QUESTIONS NATIONALES (35)
@@ -669,7 +786,7 @@ export const questions: Question[] = [
     id: 83,
     category: 'politique',
     type: 'national',
-    question: 'La Suisse a conclu avec l\'UE des accords bilatéraux ?',
+    question: 'Quel type d\'accords la Suisse a-t-elle conclus avec l\'UE ?',
     answer: 'Des accords bilatéraux',
     isMultipleChoice: true,
     options: ['accords bilatéraux', 'accords institutionnels', 'accords militaires', 'accords multilatéraux']
@@ -894,6 +1011,14 @@ export const questions: Question[] = [
     question: 'En quelle année la Suisse a-t-elle intégré l\'ONU ?',
     answer: '2002'
   },
+  {
+    id: 201,
+    category: 'politique',
+    type: 'national',
+    question: 'Citez une votation (fédérale) sur laquelle le peuple suisse s\'est prononcé ou va se prononcer.',
+    answer: 'Initiative pour un frein aux coûts, initiative biodiversité, réforme AVS 21, votations sur l\'énergie',
+    isMultipleAnswer: true
+  },
 
   // ==========================================
   // POLITIQUE - QUESTIONS CANTONALES (17)
@@ -920,7 +1045,7 @@ export const questions: Question[] = [
     question: 'Quel est le nom du/de la Président-e du Conseil d\'État de Neuchâtel (depuis le 1er juin 2024) ?',
     answer: 'Florence Nater',
     isMultipleChoice: true,
-    options: ['Laurent Favre', 'Frédéric Mairy', 'Florence Nater', 'Crystel Graf', 'Alain Ribaux']
+    options: ['Laurent Favre', 'Frédéric Mairy', 'Florence Nater', 'Crystel Graf', 'Céline Vara']
   },
   {
     id: 115,
@@ -1279,6 +1404,57 @@ export const questions: Question[] = [
     question: 'Que signifie l\'abréviation CH ?',
     answer: 'Confédération helvétique'
   },
+  {
+    id: 202,
+    category: 'social',
+    type: 'national',
+    question: 'Quelle est la langue principale parlée à Bâle ?',
+    answer: 'Allemand',
+    isMultipleChoice: true,
+    options: ['Romanche', 'Français', 'Allemand']
+  },
+  {
+    id: 203,
+    category: 'social',
+    type: 'national',
+    question: 'Dans quelle ville trouve-t-on l\'une des universités de gestion les plus prestigieuses du monde ?',
+    answer: 'Saint-Gall',
+    isMultipleChoice: true,
+    options: ['Saint-Gall', 'Morzine', 'Nyon', 'Kloten']
+  },
+  {
+    id: 204,
+    category: 'social',
+    type: 'national',
+    question: 'Quelle est la religion la plus pratiquée en Suisse romande après le catholicisme et le protestantisme ?',
+    answer: 'L\'Islam',
+    isMultipleChoice: true,
+    options: ['L\'Hindouisme', 'L\'Islam', 'L\'Orthodoxie', 'Le Bouddhisme', 'Le Judaïsme']
+  },
+  {
+    id: 205,
+    category: 'social',
+    type: 'national',
+    question: 'En Suisse, le service civil fournit notamment un certain nombre de prestations en faveur de la collectivité. Vrai ou faux ?',
+    answer: 'Vrai',
+    isMultipleChoice: true,
+    options: ['Vrai', 'Faux']
+  },
+  {
+    id: 206,
+    category: 'social',
+    type: 'national',
+    question: 'Pourquoi l\'aéroport de Zurich figure-t-il régulièrement parmi les meilleurs aéroports d\'Europe ?',
+    answer: 'Pour sa qualité de service, sa ponctualité et ses infrastructures modernes'
+  },
+  {
+    id: 207,
+    category: 'social',
+    type: 'national',
+    question: 'Quel est le premier fabricant mondial de montres ?',
+    answer: 'Le groupe Swatch ou Rolex',
+    isMultipleAnswer: true
+  },
 
   // ==========================================
   // SOCIAL - QUESTIONS CANTONALES (27)
@@ -1287,7 +1463,7 @@ export const questions: Question[] = [
     id: 162,
     category: 'social',
     type: 'cantonal',
-    question: 'Le canton de Neuchâtel est le premier canton à disposer d\'une loi sur l\'intégration des étrangers. Vrai ou faux ?',
+    question: 'La République et canton de Neuchâtel possède une loi sur l\'intégration et la cohésion multiculturelle. Vrai ou faux ?',
     answer: 'Vrai (promulguée en 1996)',
     isMultipleChoice: true,
     options: ['Vrai', 'Faux']
