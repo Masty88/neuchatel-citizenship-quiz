@@ -1042,8 +1042,8 @@ export const questions: Question[] = [
     id: 114,
     category: 'politique',
     type: 'cantonal',
-    question: 'Quel est le nom du/de la Président-e du Conseil d\'État de Neuchâtel (depuis le 1er juin 2024) ?',
-    answer: 'Florence Nater',
+    question: 'Quel est le nom du/de la Président-e du Conseil d\'État de Neuchâtel ?',
+    answer: 'Crystel Graf',
     isMultipleChoice: true,
     options: ['Laurent Favre', 'Frédéric Mairy', 'Florence Nater', 'Crystel Graf', 'Céline Vara']
   },
