@@ -771,9 +771,19 @@ export class QuizApp extends LitElement {
   }
 
   private updateCategoryCount(category: keyof QuizConfig, value: number) {
+    // Calculate max available questions for this category based on question type filter
+    const availableQuestions = questions.filter(q => {
+      if (q.category !== category) return false;
+      if (this.questionType === 'cantonal') return q.type === 'cantonal';
+      if (this.questionType === 'national') return q.type === 'national';
+      return true;
+    });
+
+    const maxAvailable = availableQuestions.length;
+
     this.quizConfig = {
       ...this.quizConfig,
-      [category]: Math.max(0, Math.min(10, value))
+      [category]: Math.max(0, Math.min(maxAvailable, value))
     };
   }
 
