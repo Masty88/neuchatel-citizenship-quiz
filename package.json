@@ -9,9 +9,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.2",
     "@shoelace-style/shoelace": "^2.20.1",
     "astro": "^5.15.4",
-    "groq-sdk": "^0.34.0",
     "lit": "^3.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/vercel": "^9.0.0"
   }
 }
