@@ -9,6 +9,7 @@ import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/radio-group/radio-group.js';
 import '@shoelace-style/shoelace/dist/components/radio-button/radio-button.js';
+import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
 
 interface QuizState {
   selectedQuestions: Question[];
@@ -363,6 +364,50 @@ export class QuizApp extends LitElement {
       color: white;
     }
 
+    sl-checkbox {
+      margin-bottom: 0.75rem;
+    }
+
+    sl-checkbox::part(control) {
+      border: 2px solid #e5e5e5;
+      border-radius: 6px;
+    }
+
+    sl-checkbox::part(control--checked) {
+      background: #DC0018;
+      border-color: #DC0018;
+    }
+
+    sl-checkbox::part(label) {
+      padding: 1rem 1.25rem;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      background: white;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    sl-checkbox:hover::part(label) {
+      border-color: #DC0018;
+      background: #fff5f5;
+    }
+
+    sl-checkbox[checked]::part(label) {
+      border-color: #DC0018;
+      background: #DC0018;
+      color: white;
+      font-weight: 500;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
     sl-input {
       margin-bottom: 1rem;
     }
@@ -633,6 +678,7 @@ export class QuizApp extends LitElement {
   };
 
   @state() private currentAnswer = '';
+  @state() private selectedAnswers: string[] = [];
   @state() private quizStarted = false;
   @state() private showConfig = false;
   @state() private showFeedback = false;
@@ -699,13 +745,33 @@ export class QuizApp extends LitElement {
     this.currentAnswer = radioGroup.value;
   }
 
+  private handleCheckboxChange(e: Event) {
+    const checkbox = e.target as any;
+    const value = checkbox.value;
+
+    if (checkbox.checked) {
+      this.selectedAnswers = [...this.selectedAnswers, value];
+    } else {
+      this.selectedAnswers = this.selectedAnswers.filter(a => a !== value);
+    }
+  }
+
   private nextQuestion() {
+    const currentQuestion = this.quizState.selectedQuestions[this.quizState.currentIndex];
+
     // If showing feedback, move to next question
     if (this.showFeedback) {
       this.showFeedback = false;
       this.showHelp = false;
-      this.quizState.userAnswers.push(this.currentAnswer);
-      this.currentAnswer = '';
+
+      // Store the answer (either single or multiple)
+      if (currentQuestion.isMultipleAnswer && currentQuestion.isMultipleChoice) {
+        this.quizState.userAnswers.push(this.selectedAnswers.join(', '));
+        this.selectedAnswers = [];
+      } else {
+        this.quizState.userAnswers.push(this.currentAnswer);
+        this.currentAnswer = '';
+      }
 
       if (this.quizState.currentIndex < this.quizState.selectedQuestions.length - 1) {
         this.quizState = {
@@ -719,14 +785,24 @@ export class QuizApp extends LitElement {
     }
 
     // Validate answer is not empty
-    if (!this.currentAnswer.trim()) {
-      alert('Veuillez répondre à la question avant de continuer.');
-      return;
+    if (currentQuestion.isMultipleAnswer && currentQuestion.isMultipleChoice) {
+      if (this.selectedAnswers.length === 0) {
+        alert('Veuillez sélectionner au moins une réponse.');
+        return;
+      }
+    } else {
+      if (!this.currentAnswer.trim()) {
+        alert('Veuillez répondre à la question avant de continuer.');
+        return;
+      }
     }
 
     // Check answer and show feedback
-    const currentQuestion = this.quizState.selectedQuestions[this.quizState.currentIndex];
-    this.isCorrect = this.checkAnswer(this.currentAnswer, currentQuestion.answer);
+    if (currentQuestion.isMultipleAnswer && currentQuestion.isMultipleChoice) {
+      this.isCorrect = this.checkAnswer(this.selectedAnswers.join(', '), currentQuestion.answer);
+    } else {
+      this.isCorrect = this.checkAnswer(this.currentAnswer, currentQuestion.answer);
+    }
     this.showFeedback = true;
   }
 
@@ -1016,13 +1092,26 @@ export class QuizApp extends LitElement {
             ${currentQuestion.question}
           </div>
 
-          ${currentQuestion.isMultipleChoice ? html`
-            <sl-radio-group value=${this.currentAnswer} @sl-change=${this.handleRadioChange} ?disabled=${this.showFeedback}>
-              ${currentQuestion.options?.map(option => html`
-                <sl-radio-button value=${option}>${option}</sl-radio-button>
-              `)}
-            </sl-radio-group>
-          ` : html`
+          ${currentQuestion.isMultipleChoice ? (
+            currentQuestion.isMultipleAnswer ? html`
+              <div class="checkbox-group">
+                ${currentQuestion.options?.map(option => html`
+                  <sl-checkbox
+                    value=${option}
+                    ?checked=${this.selectedAnswers.includes(option)}
+                    @sl-change=${this.handleCheckboxChange}
+                    ?disabled=${this.showFeedback}
+                  >${option}</sl-checkbox>
+                `)}
+              </div>
+            ` : html`
+              <sl-radio-group value=${this.currentAnswer} @sl-change=${this.handleRadioChange} ?disabled=${this.showFeedback}>
+                ${currentQuestion.options?.map(option => html`
+                  <sl-radio-button value=${option}>${option}</sl-radio-button>
+                `)}
+              </sl-radio-group>
+            `
+          ) : html`
             <sl-input
               placeholder="Entrez votre réponse..."
               value=${this.currentAnswer}
