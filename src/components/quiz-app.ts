@@ -740,6 +740,7 @@ export class QuizApp extends LitElement {
   @state() private showHelp = false;
   @state() private copyButtonText = '📋 Copier';
   @state() private isValidating = false;
+  @state() private isCalculatingScore = false;
   @state() private questionType: QuestionType = 'all';
   @state() private quizConfig: QuizConfig = {
     géographie: 4,
@@ -978,6 +979,7 @@ export class QuizApp extends LitElement {
   }
 
   private async calculateScore() {
+    this.isCalculatingScore = true;
     let score = 0;
 
     // Validate all answers with AI
@@ -1004,6 +1006,7 @@ export class QuizApp extends LitElement {
       score,
       showResults: true
     };
+    this.isCalculatingScore = false;
   }
 
   private restartQuiz() {
@@ -1350,6 +1353,26 @@ export class QuizApp extends LitElement {
     `;
   }
 
+  private renderCalculatingScore() {
+    return html`
+      <div class="content-wrapper">
+        <div class="results-screen">
+          <div class="results-card">
+            <h2>Calcul du score en cours...</h2>
+            
+            <div style="text-align: center; padding: 2rem 0;">
+              <sl-spinner style="font-size: 3rem; --track-width: 6px;"></sl-spinner>
+            </div>
+
+            <p style="text-align: center; color: #666; margin-top: 1rem;">
+              Validation de vos réponses avec l'IA...
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   private renderResults() {
     const passed = this.quizState.score >= 10;
     const percentage = (this.quizState.score / this.quizState.selectedQuestions.length) * 100;
@@ -1440,7 +1463,9 @@ export class QuizApp extends LitElement {
 
       ${!this.quizStarted
         ? (this.showConfig ? this.renderConfigScreen() : this.renderStartScreen())
-        : (this.quizState.showResults ? this.renderResults() : this.renderQuiz())}
+        : (this.isCalculatingScore
+          ? this.renderCalculatingScore()
+          : (this.quizState.showResults ? this.renderResults() : this.renderQuiz()))}
     `;
   }
 }
