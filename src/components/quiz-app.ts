@@ -811,8 +811,21 @@ export class QuizApp extends LitElement {
     }
   }
 
-  private toggleHelp() {
-    this.showHelp = !this.showHelp;
+  private async toggleHelp() {
+    if (!this.showHelp) {
+      // Copy answer to clipboard
+      const currentQuestion = this.quizState.selectedQuestions[this.quizState.currentIndex];
+      try {
+        await navigator.clipboard.writeText(currentQuestion.answer);
+        // Show the answer after copying
+        this.showHelp = true;
+      } catch (err) {
+        // Fallback: just show the answer
+        this.showHelp = true;
+      }
+    } else {
+      this.showHelp = false;
+    }
   }
 
   private getCategoryColor(category: string): string {
@@ -997,7 +1010,7 @@ export class QuizApp extends LitElement {
               class="help-button"
               @click=${this.toggleHelp}
             >
-              ${this.showHelp ? '🙈 Cacher la réponse' : '💡 Afficher la réponse'}
+              ${this.showHelp ? '📋 Cacher la réponse' : '📋 Copier la réponse'}
             </sl-button>
           ` : ''}
 
