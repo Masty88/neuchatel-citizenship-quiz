@@ -658,9 +658,9 @@ export const questions: Question[] = [
     category: 'histoire',
     type: 'national',
     question: 'Dans quelle entité se trouvait la Suisse au Moyen-Âge ?',
-    answer: 'Le Saint-Empire romain germanique',
+    answer: 'La Suisse, en tant qu\'entité politique unifiée, n\'existait pas.',
     isMultipleChoice: true,
-    options: ['L\'Empire romain d\'Occident', 'L\'Empire romain d\'Orient', 'Le Royaume de France', 'Le Royaume de Sardaigne', 'Le Saint-Empire romain germanique']
+    options: ['L\'Empire romain d\'Occident', 'L\'Empire romain d\'Orient', 'Le Royaume de France', 'La Suisse, en tant qu\'entité politique unifiée, n\'existait pas.', 'Le Saint-Empire romain germanique']
   },
   {
     id: 199,
