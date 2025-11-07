@@ -416,6 +416,21 @@ export class QuizApp extends LitElement {
       border-radius: 8px;
     }
 
+    .help-alert {
+      position: relative;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .copy-button::part(base) {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
     .navigation-buttons {
       display: flex;
       gap: 0.75rem;
@@ -616,6 +631,7 @@ export class QuizApp extends LitElement {
   @state() private showFeedback = false;
   @state() private isCorrect = false;
   @state() private showHelp = false;
+  @state() private copyButtonText = '📋 Copier';
   @state() private questionType: QuestionType = 'all';
   @state() private quizConfig: QuizConfig = {
     géographie: 4,
@@ -811,20 +827,26 @@ export class QuizApp extends LitElement {
     }
   }
 
-  private async toggleHelp() {
+  private toggleHelp() {
+    this.showHelp = !this.showHelp;
     if (!this.showHelp) {
-      // Copy answer to clipboard
-      const currentQuestion = this.quizState.selectedQuestions[this.quizState.currentIndex];
-      try {
-        await navigator.clipboard.writeText(currentQuestion.answer);
-        // Show the answer after copying
-        this.showHelp = true;
-      } catch (err) {
-        // Fallback: just show the answer
-        this.showHelp = true;
-      }
-    } else {
-      this.showHelp = false;
+      this.copyButtonText = '📋 Copier';
+    }
+  }
+
+  private async copyAnswer() {
+    const currentQuestion = this.quizState.selectedQuestions[this.quizState.currentIndex];
+    try {
+      await navigator.clipboard.writeText(currentQuestion.answer);
+      this.copyButtonText = '✓ Copié';
+      setTimeout(() => {
+        this.copyButtonText = '📋 Copier';
+      }, 2000);
+    } catch (err) {
+      this.copyButtonText = '✗ Erreur';
+      setTimeout(() => {
+        this.copyButtonText = '📋 Copier';
+      }, 2000);
     }
   }
 
@@ -1010,14 +1032,22 @@ export class QuizApp extends LitElement {
               class="help-button"
               @click=${this.toggleHelp}
             >
-              ${this.showHelp ? '📋 Cacher la réponse' : '📋 Copier la réponse'}
+              ${this.showHelp ? '🙈 Cacher la réponse' : '💡 Montrer la réponse'}
             </sl-button>
           ` : ''}
 
           ${this.showHelp && !this.showFeedback ? html`
-            <sl-alert variant="warning" open style="margin-top: 1rem;">
+            <sl-alert variant="warning" open class="help-alert" style="margin-top: 1rem;">
               <sl-icon slot="icon" name="lightbulb"></sl-icon>
               <strong>Réponse :</strong> ${currentQuestion.answer}
+              <sl-button
+                variant="default"
+                size="small"
+                class="copy-button"
+                @click=${this.copyAnswer}
+              >
+                ${this.copyButtonText}
+              </sl-button>
             </sl-alert>
           ` : ''}
 
