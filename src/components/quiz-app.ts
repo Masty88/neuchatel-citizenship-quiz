@@ -25,6 +25,8 @@ interface QuizConfig {
   social: number;
 }
 
+type QuestionType = 'all' | 'cantonal' | 'national';
+
 @customElement('quiz-app')
 export class QuizApp extends LitElement {
   static styles = css`
@@ -218,6 +220,57 @@ export class QuizApp extends LitElement {
       color: #0284c7;
       display: block;
       margin-bottom: 0.25rem;
+    }
+
+    .question-type-filter {
+      margin: 2rem 0;
+    }
+
+    .filter-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .filter-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .filter-option {
+      cursor: pointer;
+      padding: 0.875rem 1rem;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      background: white;
+      text-align: center;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      font-size: 0.9375rem;
+    }
+
+    .filter-option:hover {
+      border-color: #DC0018;
+      background: #fff5f5;
+    }
+
+    .filter-option.active {
+      border-color: #DC0018;
+      background: #DC0018;
+      color: white;
+    }
+
+    .filter-label {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .filter-description {
+      font-size: 0.75rem;
+      opacity: 0.8;
     }
 
     .quiz-progress {
@@ -563,6 +616,7 @@ export class QuizApp extends LitElement {
   @state() private showFeedback = false;
   @state() private isCorrect = false;
   @state() private showHelp = false;
+  @state() private questionType: QuestionType = 'all';
   @state() private quizConfig: QuizConfig = {
     géographie: 4,
     histoire: 4,
@@ -578,28 +632,23 @@ export class QuizApp extends LitElement {
       const count = this.quizConfig[category];
       if (count === 0) return;
 
-      const categoryQuestions = questions.filter(q => q.category === category);
-      const cantonalQuestions = categoryQuestions.filter(q => q.type === 'cantonal');
+      // Filter by category
+      let categoryQuestions = questions.filter(q => q.category === category);
 
-      // Try to include at least 1 cantonal question if count > 0
-      if (cantonalQuestions.length > 0 && count > 0) {
-        const cantonalQuestion = cantonalQuestions[Math.floor(Math.random() * cantonalQuestions.length)];
-        selectedQuestions.push(cantonalQuestion);
-
-        // Get remaining questions
-        const remainingQuestions = categoryQuestions.filter(q => q.id !== cantonalQuestion.id);
-        for (let i = 1; i < count; i++) {
-          if (remainingQuestions.length > 0) {
-            const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
-            selectedQuestions.push(remainingQuestions[randomIndex]);
-            remainingQuestions.splice(randomIndex, 1);
-          }
-        }
-      } else {
-        // Just get random questions from category
-        const shuffled = [...categoryQuestions].sort(() => Math.random() - 0.5);
-        selectedQuestions.push(...shuffled.slice(0, count));
+      // Filter by question type (cantonal/national/all)
+      if (this.questionType === 'cantonal') {
+        categoryQuestions = categoryQuestions.filter(q => q.type === 'cantonal');
+      } else if (this.questionType === 'national') {
+        categoryQuestions = categoryQuestions.filter(q => q.type === 'national');
       }
+
+      // If filtering by type leaves no questions, skip this category
+      if (categoryQuestions.length === 0) return;
+
+      // Get random questions from filtered list
+      const shuffled = [...categoryQuestions].sort(() => Math.random() - 0.5);
+      const questionsToAdd = shuffled.slice(0, Math.min(count, categoryQuestions.length));
+      selectedQuestions.push(...questionsToAdd);
     });
 
     return selectedQuestions.sort(() => Math.random() - 0.5);
@@ -794,32 +843,68 @@ export class QuizApp extends LitElement {
           <div class="welcome-card">
             <h2>Configurez votre quiz</h2>
             <div class="start-info">
-              Choisissez le nombre de questions par thème (0-10 questions par catégorie)
+              Personnalisez votre quiz selon vos besoins
+            </div>
+
+            <div class="question-type-filter">
+              <span class="filter-title">Type de questions</span>
+              <div class="filter-options">
+                <div
+                  class="filter-option ${this.questionType === 'all' ? 'active' : ''}"
+                  @click=${() => this.questionType = 'all'}
+                >
+                  <span class="filter-label">🌍 Toutes</span>
+                  <span class="filter-description">Cantonales + Nationales</span>
+                </div>
+                <div
+                  class="filter-option ${this.questionType === 'cantonal' ? 'active' : ''}"
+                  @click=${() => this.questionType = 'cantonal'}
+                >
+                  <span class="filter-label">🏔️ Cantonales</span>
+                  <span class="filter-description">Neuchâtel uniquement</span>
+                </div>
+                <div
+                  class="filter-option ${this.questionType === 'national' ? 'active' : ''}"
+                  @click=${() => this.questionType = 'national'}
+                >
+                  <span class="filter-label">🇨🇭 Nationales</span>
+                  <span class="filter-description">Suisse uniquement</span>
+                </div>
+              </div>
             </div>
 
             <div class="category-config">
-              ${(['géographie', 'histoire', 'politique', 'social'] as const).map(category => html`
-                <div class="category-item">
-                  <div class="category-header">
-                    <div class="category-name">
-                      <span class="category-icon">${this.getCategoryIcon(category)}</span>
-                      ${category.charAt(0).toUpperCase() + category.slice(1)}
+              ${(['géographie', 'histoire', 'politique', 'social'] as const).map(category => {
+                const availableQuestions = questions.filter(q => {
+                  if (q.category !== category) return false;
+                  if (this.questionType === 'cantonal') return q.type === 'cantonal';
+                  if (this.questionType === 'national') return q.type === 'national';
+                  return true;
+                });
+
+                return html`
+                  <div class="category-item">
+                    <div class="category-header">
+                      <div class="category-name">
+                        <span class="category-icon">${this.getCategoryIcon(category)}</span>
+                        ${category.charAt(0).toUpperCase() + category.slice(1)}
+                      </div>
                     </div>
+                    <div class="category-count">
+                      ${availableQuestions.length} questions disponibles
+                    </div>
+                    <sl-input
+                      type="number"
+                      value=${this.quizConfig[category]}
+                      min="0"
+                      max=${availableQuestions.length}
+                      @sl-input=${(e: any) => this.updateCategoryCount(category, parseInt(e.target.value) || 0)}
+                    >
+                      <span slot="suffix">questions</span>
+                    </sl-input>
                   </div>
-                  <div class="category-count">
-                    ${questions.filter(q => q.category === category).length} questions disponibles
-                  </div>
-                  <sl-input
-                    type="number"
-                    value=${this.quizConfig[category]}
-                    min="0"
-                    max="10"
-                    @sl-input=${(e: any) => this.updateCategoryCount(category, parseInt(e.target.value) || 0)}
-                  >
-                    <span slot="suffix">questions</span>
-                  </sl-input>
-                </div>
-              `)}
+                `;
+              })}
             </div>
 
             <div class="total-questions">

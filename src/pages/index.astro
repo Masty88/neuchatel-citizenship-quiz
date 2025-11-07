@@ -3,14 +3,125 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 ---
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr-CH" prefix="og: https://ogp.me/ns#">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Quiz de Naturalisation - Canton de Neuchâtel</title>
-		<meta name="description" content="Quiz de préparation pour la naturalisation suisse dans le canton de Neuchâtel" />
+
+		<!-- Primary Meta Tags -->
+		<title>Quiz de Naturalisation Suisse 🇨🇭 | Canton de Neuchâtel | Test Gratuit</title>
+		<meta name="title" content="Quiz de Naturalisation Suisse 🇨🇭 | Canton de Neuchâtel | Test Gratuit" />
+		<meta name="description" content="Préparez votre naturalisation suisse avec notre quiz gratuit ! 16 questions sur la géographie, l'histoire, la politique et le social du Canton de Neuchâtel. Test interactif avec feedback immédiat." />
+		<meta name="keywords" content="naturalisation suisse, quiz naturalisation, canton neuchâtel, citoyenneté suisse, test naturalisation, préparation naturalisation, questions naturalisation neuchâtel, devenir suisse" />
+		<meta name="author" content="Quiz Naturalisation Neuchâtel" />
+		<meta name="language" content="French" />
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href="https://votre-domaine.com/" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://votre-domaine.com/" />
+		<meta property="og:title" content="Quiz de Naturalisation Suisse 🇨🇭 | Canton de Neuchâtel" />
+		<meta property="og:description" content="Préparez votre naturalisation suisse avec notre quiz gratuit ! 16 questions interactives avec feedback immédiat." />
+		<meta property="og:image" content="https://votre-domaine.com/og-image.png" />
+		<meta property="og:locale" content="fr_CH" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://votre-domaine.com/" />
+		<meta property="twitter:title" content="Quiz de Naturalisation Suisse 🇨🇭 | Canton de Neuchâtel" />
+		<meta property="twitter:description" content="Préparez votre naturalisation suisse avec notre quiz gratuit ! 16 questions interactives avec feedback immédiat." />
+		<meta property="twitter:image" content="https://votre-domaine.com/og-image.png" />
+
+		<!-- Geo Tags -->
+		<meta name="geo.region" content="CH-NE" />
+		<meta name="geo.placename" content="Neuchâtel" />
+		<meta name="geo.position" content="46.992;6.931" />
+		<meta name="ICBM" content="46.992, 6.931" />
+
+		<!-- JSON-LD Structured Data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "EducationalApplication",
+			"name": "Quiz de Naturalisation Suisse - Canton de Neuchâtel",
+			"description": "Quiz interactif de préparation pour la naturalisation suisse dans le canton de Neuchâtel. 16 questions sur la géographie, l'histoire, la politique et le social.",
+			"applicationCategory": "EducationalApplication",
+			"offers": {
+				"@type": "Offer",
+				"price": "0",
+				"priceCurrency": "CHF"
+			},
+			"educationalUse": "Test de préparation",
+			"audience": {
+				"@type": "EducationalAudience",
+				"educationalRole": "Candidat à la naturalisation"
+			},
+			"inLanguage": "fr-CH",
+			"publisher": {
+				"@type": "Organization",
+				"name": "Quiz Naturalisation Neuchâtel"
+			},
+			"about": {
+				"@type": "Thing",
+				"name": "Naturalisation Suisse",
+				"sameAs": "https://www.ch.ch/fr/nationalite-suisse/"
+			},
+			"availableOnDevice": ["Desktop", "Mobile", "Tablet"],
+			"operatingSystem": "Web Browser"
+		}
+		</script>
+
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Quiz",
+			"name": "Quiz de Naturalisation Canton de Neuchâtel",
+			"description": "Test vos connaissances sur la Suisse et le Canton de Neuchâtel",
+			"numberOfQuestions": 16,
+			"educationalLevel": "Préparation naturalisation",
+			"educationalUse": "Assessment",
+			"learningResourceType": "Quiz",
+			"inLanguage": "fr-CH",
+			"about": [
+				{
+					"@type": "Thing",
+					"name": "Géographie de la Suisse"
+				},
+				{
+					"@type": "Thing",
+					"name": "Histoire de la Suisse"
+				},
+				{
+					"@type": "Thing",
+					"name": "Politique Suisse"
+				},
+				{
+					"@type": "Thing",
+					"name": "Société Suisse"
+				}
+			]
+		}
+		</script>
+
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "WebApplication",
+			"name": "Quiz de Naturalisation Neuchâtel",
+			"url": "https://votre-domaine.com",
+			"applicationCategory": "Education",
+			"browserRequirements": "Requires JavaScript. Requires HTML5.",
+			"operatingSystem": "All",
+			"offers": {
+				"@type": "Offer",
+				"price": "0"
+			}
+		}
+		</script>
+
 		<style>
 			:root {
 				--sl-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;

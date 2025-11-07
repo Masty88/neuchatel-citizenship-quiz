@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://votre-domaine.com/</loc>
+    <lastmod>2025-01-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://votre-domaine.com/og-image.png</image:loc>
+      <image:title>Quiz de Naturalisation Suisse Canton de Neuchâtel</image:title>
+      <image:caption>Quiz interactif pour la préparation à la naturalisation suisse</image:caption>
+    </image:image>
+  </url>
+</urlset>
