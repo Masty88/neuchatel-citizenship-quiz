@@ -348,6 +348,9 @@ export class QuizApp extends LitElement {
       background: white;
       transition: all 0.2s ease;
       font-size: 1rem;
+      white-space: normal;
+      word-wrap: break-word;
+      min-height: 3rem;
     }
 
     sl-radio-button::part(button):hover {
@@ -383,6 +386,13 @@ export class QuizApp extends LitElement {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      min-height: 3rem;
+    }
+
+    .checkbox-item span {
+      flex: 1;
+      word-wrap: break-word;
+      white-space: normal;
     }
 
     .checkbox-item:hover {

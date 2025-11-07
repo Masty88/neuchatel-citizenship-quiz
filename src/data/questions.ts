@@ -646,7 +646,7 @@ export const questions: Question[] = [
     id: 80,
     category: 'politique',
     type: 'national',
-    question: 'Elisabeth Kopp est connue pour être la première femme élue au Conseil Fédéral ?',
+    question: 'Pour quelle raison Elisabeth Kopp est-elle connue ?',
     answer: 'Être la première femme à avoir été élue au Conseil Fédéral',
     isMultipleChoice: true,
     options: ['être la première femme à avoir été élue au Conseil Fédéral', 'la première femme à avoir fait l\'armée en Suisse', 'la première femme à avoir demandé et obtenu le divorce en Suisse']
@@ -685,8 +685,8 @@ export const questions: Question[] = [
     id: 85,
     category: 'politique',
     type: 'national',
-    question: 'Quel est le nom du/de la président-e actuel-le de la Confédération (2024) ?',
-    answer: 'Mme Viola Amherd'
+    question: 'Quel est le nom du/de la président-e actuel-le de la Confédération (2025) ?',
+    answer: 'Karin Keller-Sutter'
   },
   {
     id: 86,
