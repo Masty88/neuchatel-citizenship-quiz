@@ -609,6 +609,13 @@ export class QuizApp extends LitElement {
       opacity: 0.95;
     }
 
+    .auto-advance-text {
+      font-size: 0.875rem;
+      font-weight: 400;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+    }
+
     .results-screen {
       text-align: center;
     }
@@ -740,6 +747,34 @@ export class QuizApp extends LitElement {
     politique: 4,
     social: 4
   };
+  @state() private autoAdvanceSeconds = 5;
+
+  private autoAdvanceTimer: number | null = null;
+
+  private startAutoAdvanceTimer() {
+    this.clearAutoAdvanceTimer();
+    this.autoAdvanceSeconds = 5;
+    
+    this.autoAdvanceTimer = window.setInterval(() => {
+      this.autoAdvanceSeconds--;
+      if (this.autoAdvanceSeconds <= 0) {
+        this.clearAutoAdvanceTimer();
+        this.nextQuestion();
+      }
+    }, 1000);
+  }
+
+  private clearAutoAdvanceTimer() {
+    if (this.autoAdvanceTimer !== null) {
+      clearInterval(this.autoAdvanceTimer);
+      this.autoAdvanceTimer = null;
+    }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.clearAutoAdvanceTimer();
+  }
 
   private getRandomQuestions(): Question[] {
     const categories = ['géographie', 'histoire', 'politique', 'social'] as const;
@@ -817,6 +852,7 @@ export class QuizApp extends LitElement {
 
     // If showing feedback, move to next question
     if (this.showFeedback) {
+      this.clearAutoAdvanceTimer();
       this.showFeedback = false;
       this.showHelp = false;
 
@@ -868,6 +904,9 @@ export class QuizApp extends LitElement {
 
       this.isCorrect = result.isCorrect;
       this.showFeedback = true;
+      
+      // Start auto-advance timer
+      this.startAutoAdvanceTimer();
     } catch (error) {
       console.error('Validation error:', error);
       alert('Erreur lors de la validation. Veuillez réessayer.');
@@ -878,6 +917,7 @@ export class QuizApp extends LitElement {
 
   private previousQuestion() {
     if (this.quizState.currentIndex > 0) {
+      this.clearAutoAdvanceTimer();
       this.showFeedback = false;
       this.showHelp = false;
       this.currentAnswer = this.quizState.userAnswers[this.quizState.currentIndex - 1];
@@ -1293,7 +1333,12 @@ export class QuizApp extends LitElement {
         <div class="feedback-banner ${this.isCorrect ? 'correct' : 'incorrect'}">
           <div class="feedback-content">
             <span class="feedback-icon">${this.isCorrect ? '✓' : '✗'}</span>
-            <div>${this.isCorrect ? 'Bonne réponse !' : 'Réponse incorrecte'}</div>
+            <div>
+              <div>${this.isCorrect ? 'Bonne réponse !' : 'Réponse incorrecte'}</div>
+              <div class="auto-advance-text">
+                Prochaine question dans ${this.autoAdvanceSeconds}s
+              </div>
+            </div>
             ${!this.isCorrect ? html`
               <div class="feedback-text">
                 Réponse correcte : <strong>${currentQuestion.answer}</strong>
