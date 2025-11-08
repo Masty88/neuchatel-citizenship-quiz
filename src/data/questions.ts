@@ -818,7 +818,7 @@ export const questions: Question[] = [
     category: 'politique',
     type: 'national',
     question: 'Pouvez-vous nommer quatre conseiller-ère-s fédérales-aux ?',
-    answer: 'Viola Amherd, Beat Jans, Albert Rösti, Karin Keller-Sutter, Ignazio Cassis, Elisabeth Baume-Schneider, Guy Parmelin',
+    answer: 'Martin Pfister, Beat Jans, Albert Rösti, Karin Keller-Sutter, Ignazio Cassis, Elisabeth Baume-Schneider, Guy Parmelin',
     isMultipleAnswer: true
   },
   {
