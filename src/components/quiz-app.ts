@@ -361,6 +361,11 @@ export class QuizApp extends LitElement {
     sl-radio-button::part(button):hover {
       border-color: #DC0018;
       background: #fff5f5;
+      color: #1a1a1a;
+    }
+
+    sl-radio-button::part(label) {
+      color: #1a1a1a;
     }
 
     sl-radio-button[checked]::part(button) {
