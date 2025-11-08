@@ -970,7 +970,7 @@ export const questions: Question[] = [
     id: 106,
     category: 'politique',
     type: 'national',
-    question: 'La neutralité suisse, c\'est la décision de ne pas prendre parti dans les conflits ?',
+    question: 'La neutralité suisse, c\'est la décision de...',
     answer: 'La décision de ne pas prendre parti dans les conflits',
     isMultipleChoice: true,
     options: ['la décision de ne pas prendre parti dans les conflits', 'la décision de ne pas vendre d\'armes', 'la décision de ne pas accepter d\'argent des dictateurs']
