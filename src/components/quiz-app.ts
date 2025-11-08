@@ -131,6 +131,10 @@ export class QuizApp extends LitElement {
       padding: 2rem 1rem;
     }
 
+    .content-wrapper.with-feedback {
+      padding-bottom: 200px;
+    }
+
     .start-screen {
       text-align: center;
     }
@@ -330,8 +334,8 @@ export class QuizApp extends LitElement {
     }
 
     sl-radio-group {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 0.75rem;
     }
 
@@ -756,7 +760,7 @@ export class QuizApp extends LitElement {
   private startAutoAdvanceTimer() {
     this.clearAutoAdvanceTimer();
     this.autoAdvanceSeconds = 5;
-    
+
     this.autoAdvanceTimer = window.setInterval(() => {
       this.autoAdvanceSeconds--;
       if (this.autoAdvanceSeconds <= 0) {
@@ -1179,7 +1183,7 @@ export class QuizApp extends LitElement {
               ` : ''}
             </div>
 
-            <div style="display: flex; gap: 0.75rem;">
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
               <sl-button variant="default" @click=${() => this.showConfig = false} style="flex: 1;">
                 Retour
               </sl-button>
@@ -1203,7 +1207,7 @@ export class QuizApp extends LitElement {
     const progress = ((this.quizState.currentIndex + 1) / this.quizState.selectedQuestions.length) * 100;
 
     return html`
-      <div class="content-wrapper">
+      <div class="content-wrapper ${this.showFeedback ? 'with-feedback' : ''}">
         <div class="quiz-progress">
           <div class="progress-label">
             <span class="question-number">Question ${this.quizState.currentIndex + 1} sur ${this.quizState.selectedQuestions.length}</span>
@@ -1240,11 +1244,18 @@ export class QuizApp extends LitElement {
                 `)}
               </div>
             ` : html`
-              <sl-radio-group value=${this.currentAnswer} @sl-change=${this.handleRadioChange} ?disabled=${this.showFeedback}>
+              <div class="radio-group-wrapper">
                 ${currentQuestion.options?.map(option => html`
-                  <sl-radio-button value=${option}>${option}</sl-radio-button>
+                  <sl-radio-button
+                    value=${option}
+                    ?checked=${this.currentAnswer === option}
+                    ?disabled=${this.showFeedback}
+                    @click=${() => !this.showFeedback && (this.currentAnswer = option)}
+                  >
+                    ${option}
+                  </sl-radio-button>
                 `)}
-              </sl-radio-group>
+              </div>
             `
           ) : html`
             <sl-input
