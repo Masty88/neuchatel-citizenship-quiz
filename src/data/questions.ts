@@ -437,7 +437,7 @@ export const questions: Question[] = [
     category: 'géographie',
     type: 'cantonal',
     question: 'Quel est le plus grand lac de Suisse ?',
-    answer: 'Lac Léman',
+    answer: 'Lac de Neuchâtel',
     isMultipleChoice: true,
     options: ['Lac Léman', 'Lac de Zürich', 'Lac de Neuchâtel', 'Lac des Quatre-Cantons']
   },
